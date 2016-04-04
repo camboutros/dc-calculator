@@ -1,5 +1,13 @@
 // $Id: bigint.h,v 1.29 2016-03-24 19:30:57-07 - - $
 
+/////////////////////////////////////
+// Name: Camellia Boutros          //
+// CruzID: cboutros                //
+// Class: CMPS 109                 //
+// Title: asg1                     //
+// Date: 4/4/2016                  //
+/////////////////////////////////////
+
 #ifndef __BIGINT_H__
 #define __BIGINT_H__
 

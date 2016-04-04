@@ -50,6 +50,8 @@ ${DEPFILE} :
 
 again :
 	${GMAKE} spotless dep ci all lis
+submit: 
+	submit cmps109-wm.s16 asg1 main.cpp bigint.h ubigint.h bigint.cpp ubigint.cpp libfns.h libfns.cpp relops.h scanner.h scanner.cpp iterstack.h general.h general.cpp debug.h Makefile README
 
 ifeq (${NEEDINCL}, )
 include ${DEPFILE}
