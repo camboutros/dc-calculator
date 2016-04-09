@@ -25,21 +25,20 @@ bigint::bigint (long that): uvalue (that), is_negative (that < 0) {
 
 bigint::bigint (const ubigint& uvalue, bool is_negative):
                 uvalue(uvalue), is_negative(is_negative) {
+		//vector_size = uvalue.get_vector_size();
 }
 
 bigint::bigint (const string& that) {
    is_negative = that.size() > 0 and that[0] == '_';
    uvalue = ubigint (that.substr (is_negative ? 1 : 0)); 
-
+   vector_size = uvalue.get_vector_size();
 }
 
-int bigint::get_size() const {
-	int return_size = uvalue.get_vector_size() ;
-	return return_size;
-}
 
-bool bigint::check_difference_true(ubigint& first, ubigint& second) {
-	bool difference = ubigint::ubigint_check_difference_true(first, second);
+
+
+bool bigint::check_difference_true(const ubigint& first, const ubigint& second)  const{
+	bool difference = first.ubigint_check_difference_true(second);
         return difference;
 }
 
@@ -88,7 +87,13 @@ bigint bigint::operator- (const bigint& that) const {
 }
 
 bigint bigint::operator* (const bigint& that) const {
-   bigint result = uvalue * that.uvalue;
+   bigint result;
+   if (not(is_negative == that.is_negative)){
+	result.is_negative = true; // - * + = -
+   } else if (is_negative == true){ ///signs are the same and both -
+   	result.is_negative = false; // resulting sign is positive
+   } else { result.is_negative = false; } // otherwise is +;
+   result. uvalue = uvalue * that.uvalue;
    return result;
 }
 
@@ -103,13 +108,14 @@ bigint bigint::operator% (const bigint& that) const {
 }
 
 bool bigint::operator== (const bigint& that) const{
-   int size_1 = this.get_size();
-   int size_2 = that.get_size();
-   if (not((is_negative == that.is_negative) and (size_1 == size_2))){
-	if (check_difference_true(uvalue, that.uvalue)) { //difference found 
-		return false; //bigints not the same
-	}
+   
+   if (not((is_negative == that.is_negative) and (vector_size == that.vector_size))){
+		return false;
    }
+   if (check_difference_true(uvalue, that.uvalue)) { //difference found 
+		return false; //bigints not the same
+   }
+   
    return true; 
 }
 

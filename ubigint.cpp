@@ -20,6 +20,16 @@ using namespace std;
 
 ubigint::ubigint (unsigned long that): ubig_value (that) {
    DEBUGF ('~', this << " -> " << 5)
+   printable_value = (string *) (that); // attempt to type cast "that" for print
+   unsigned char push_char;
+   int work_num;
+   while (that > 0 ) {
+  	 work_num = that % 10;
+ 	 push_char  = 10 - work_num;
+  	 that = that / 10;
+	 ubig_value.push_back(push_char);
+   }
+   u_vector_size = ubig_value.size(); // init u_vector_size
 }
 
 ubigint::ubigint (const string& that): ubig_value(0) {
@@ -32,8 +42,11 @@ ubigint::ubigint (const string& that): ubig_value(0) {
   /////////// Trim Trailing Zeros ///////////////
   while (ubig_value.size() > 0 and ubig_value.back() == 0 )   ubig_value.pop_back();  
 
-  /// Set printable value ... ///////////////////
+  /// Set printable_value ... ///////////////////
    printable_value = that; //lazy way
+
+  /// Set Vector Size ////////////////////
+  u_vector_size = ubig_value.size();
 }
 
 ubigint ubigint::operator+ (const ubigint& that) const {
@@ -148,31 +161,64 @@ ubigint ubigint::operator- (const ubigint& that) const {
 }
 
 ubigint ubigint::operator* (const ubigint& that) const {
-   //return ubigint (uvalue * that.uvalue);
-   return that; // test
+   ubigint product; 
+   product.ubigvalue(u_vector_size + that.u_vector_size); // inits vector to sum of sizes 
+   int base_place = 0;
+   udigit_t store_char;
+   int carry = 0;
+   int sum;
+   auto j = that.ubig_value.cbegin()
+
+   for (auto i = ubig_value.cbegin(); i != ubig_value.cend(); i++){
+	
+	for (j = j + base_place; j != that.ubig_value.cend(); j++){
+	
+		sum = (*i * *j) + carry;
+		if (sum > 9){
+			 store_char = (10 -((*i * *j) % 10));
+                         carry = ((*i * *j)/ 10);
+		} else { 
+			store_char = sum;
+			product.ubig_value.push_back(store_char); // fix
+		}
+			 
+	}
+	base_place = base_place + 1;
+   }
+	
+   return product; // test
 }
 
 void ubigint::multiply_by_2() {
-  // uvalue *= 2; test
+   udigit_t store_char;
+   char carry = 0;
+   for (auto i = ubig_value.cbegin(); i != ubig_value.cend(); i++){
+        
+	if ((((*i * 2) + carry) > 9 )){ // make sure types add up
+		store_char = ((*i * 2) - 10);
+		carry = 1;
+		ubig_value.at(i) = store_char; // check syntax
+	} 
+	 
 }
 
 void ubigint::divide_by_2() {
-  // uvalue /= 2; test
+   //uvalue /= 2; test
 }
 
 int ubigint::get_vector_size() const{
-	return ubig_value.size();
+	return u_vector_size;
 }
 
-bool ubigint_check_difference_true(ubigint& first, ubigint& second) {
-	 bool difference;
-	 auto u_itor = first.ubig_value.cbegin();
-  	 auto u_titor = second.that.ubig_value.cbegin();
+bool ubigint_check_difference_true(const ubigint& that){
+	 bool difference = true;
+	 auto u_itor = ubig_value.cbegin();
+  	 auto u_titor = that.ubig_value.cbegin();
 	
 		while(u_itor != ubig_value.end() and u_titor != that.ubig_value.end()) {
-		if (not(*u_itor == *u_titor){ 
+		if (not(*u_itor == *u_titor)){ 
 			difference = true;     // difference found
-		}  else { difference = false}; // no difference
+		}  else { return (difference = false);} // no difference
 	
 		++u_itor;
 		++u_titor;
@@ -185,10 +231,10 @@ bool ubigint_check_difference_true(ubigint& first, ubigint& second) {
 struct quo_rem { ubigint quotient; ubigint remainder; };
 quo_rem udivide (const ubigint& dividend, ubigint divisor) {
    // Note: divisor is modified so pass by value (copy).
-   ubigint zero {0};
+   ubigint zero {'0'};
    if (divisor == zero) throw domain_error ("udivide by zero");
-   ubigint power_of_2 {1};
-   ubigint quotient {0};
+   ubigint power_of_2 {'1'};
+   ubigint quotient {'0'};
    ubigint remainder {dividend}; // left operand, dividend
    while (divisor < remainder) {
       divisor.multiply_by_2();

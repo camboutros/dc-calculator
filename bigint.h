@@ -33,8 +33,8 @@ class bigint {
       bigint (const ubigint&, bool is_negative = false);
       explicit bigint (const string&);
 
-      int get_size() const; 
-      bool check_difference_true(ubigint&, ubigint&);
+      int vector_size;
+      bool check_difference_true(const ubigint&, const ubigint&) const;
 
       bigint operator+() const;
       bigint operator-() const;
@@ -45,7 +45,7 @@ class bigint {
       bigint operator/ (const bigint&) const;
       bigint operator% (const bigint&) const;
 
-      bool operator== (const bigint&) const;
+      bool operator== (const bigint&) const; // could use ubigint's version
       bool operator<  (const bigint&) const;
 };
 

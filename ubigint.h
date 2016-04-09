@@ -37,13 +37,14 @@ class ubigint {
       using ubigvalue_t = vector<udigit_t>;
        ubigvalue_t ubig_value;
       string printable_value;
+      int u_vector_size; 
      
    public:
       void multiply_by_2();
       void divide_by_2();
       
-      int get_vector_size() const;
-      bool ubigint_check_difference_true(ubigint&, ubigint&);
+      int get_vector_size() ;
+     friend bool ubigint_check_difference_true(const ubigint&);
 
       ubigint() = default; // Need default ctor as well.
       ubigint (unsigned long);
