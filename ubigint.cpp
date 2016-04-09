@@ -20,7 +20,7 @@ using namespace std;
 
 ubigint::ubigint (unsigned long that): ubig_value (that) {
    DEBUGF ('~', this << " -> " << 5)
-   printable_value = (string *) (that); // attempt to type cast "that" for print
+   printable_value = ""; // fix
    unsigned char push_char;
    int work_num;
    while (that > 0 ) {
@@ -162,12 +162,13 @@ ubigint ubigint::operator- (const ubigint& that) const {
 
 ubigint ubigint::operator* (const ubigint& that) const {
    ubigint product; 
-   product.ubigvalue(u_vector_size + that.u_vector_size); // inits vector to sum of sizes 
+   
+   product.ubig_value[u_vector_size + that.u_vector_size]; // inits vector to sum of sizes 
    int base_place = 0;
    udigit_t store_char;
    int carry = 0;
    int sum;
-   auto j = that.ubig_value.cbegin()
+   auto j = that.ubig_value.cbegin();
 
    for (auto i = ubig_value.cbegin(); i != ubig_value.cend(); i++){
 	
@@ -190,42 +191,26 @@ ubigint ubigint::operator* (const ubigint& that) const {
 }
 
 void ubigint::multiply_by_2() {
-   udigit_t store_char;
-   char carry = 0;
-   for (auto i = ubig_value.cbegin(); i != ubig_value.cend(); i++){
+   //udigit_t store_char;
+   //char carry = 0;
+   //for (auto i = ubig_value.cbegin(); i != ubig_value.cend(); i++){
         
-	if ((((*i * 2) + carry) > 9 )){ // make sure types add up
-		store_char = ((*i * 2) - 10);
-		carry = 1;
-		ubig_value.at(i) = store_char; // check syntax
-	} 
-	 
+   //	if ((((*i * 2) + carry) > 9 )){ // make sure types add up
+   //		store_char = ((*i * 2) - 10);
+   //		carry = 1;
+   //		ubig_value.at(i) = store_char; // check syntax
+   //	} 
+   // fix/test	 
 }
 
 void ubigint::divide_by_2() {
    //uvalue /= 2; test
 }
 
-int ubigint::get_vector_size() const{
+int ubigint::get_vector_size() {
 	return u_vector_size;
 }
 
-bool ubigint_check_difference_true(const ubigint& that){
-	 bool difference = true;
-	 auto u_itor = ubig_value.cbegin();
-  	 auto u_titor = that.ubig_value.cbegin();
-	
-		while(u_itor != ubig_value.end() and u_titor != that.ubig_value.end()) {
-		if (not(*u_itor == *u_titor)){ 
-			difference = true;     // difference found
-		}  else { return (difference = false);} // no difference
-	
-		++u_itor;
-		++u_titor;
-
-		}
-	return difference;
-}
 
 
 struct quo_rem { ubigint quotient; ubigint remainder; };
@@ -260,8 +245,16 @@ ubigint ubigint::operator% (const ubigint& that) const {
 }
 
 bool ubigint::operator== (const ubigint& that) const {
-   //return uvalue == that.uvalue;
-    return true; // test
+   auto u_itor = ubig_value.cbegin();
+   auto u_titor = that.ubig_value.cbegin();
+   while(u_itor != ubig_value.end() and u_titor != that.ubig_value.end()) {
+	if (*u_itor != *u_titor){
+		return false;
+	} // else... 
+        ++u_itor;
+	++u_titor;  
+    }
+    return true;
 }
 
 bool ubigint::operator< (const ubigint& that) const {

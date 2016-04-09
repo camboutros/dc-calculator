@@ -37,10 +37,7 @@ bigint::bigint (const string& that) {
 
 
 
-bool bigint::check_difference_true(const ubigint& first, const ubigint& second)  const{
-	bool difference = first.ubigint_check_difference_true(second);
-        return difference;
-}
+
 
 bigint bigint::operator+ () const {
    return *this;
@@ -112,10 +109,10 @@ bool bigint::operator== (const bigint& that) const{
    if (not((is_negative == that.is_negative) and (vector_size == that.vector_size))){
 		return false;
    }
-   if (check_difference_true(uvalue, that.uvalue)) { //difference found 
+   if (not(uvalue == that.uvalue)) { //difference found 
 		return false; //bigints not the same
    }
-   
+   // else ... 
    return true; 
 }
 

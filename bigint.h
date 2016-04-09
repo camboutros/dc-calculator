@@ -34,7 +34,7 @@ class bigint {
       explicit bigint (const string&);
 
       int vector_size;
-      bool check_difference_true(const ubigint&, const ubigint&) const;
+     
 
       bigint operator+() const;
       bigint operator-() const;
