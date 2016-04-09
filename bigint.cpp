@@ -114,12 +114,21 @@ bool bigint::operator== (const bigint& that) const{
    }
    // else ... 
    return true; 
+
 }
 
 bool bigint::operator< (const bigint& that) const {
-   if (is_negative != that.is_negative) return is_negative;
-   return is_negative ? uvalue > that.uvalue
-                      : uvalue < that.uvalue;
+   if (is_negative != that.is_negative){
+	if (is_negative == true){ // - < +
+		return true;
+	} else { return false; } // + != -
+   } 
+   else if ((is_negative == that.is_negative) and (vector_size == that.vector_size)){
+	return (uvalue < that.uvalue);
+   } else if (vector_size < that.vector_size) {
+	return true;
+   } else { return false;}
+   
 }
 
 ostream& operator<< (ostream& out, const bigint& that) {

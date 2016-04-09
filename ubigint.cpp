@@ -258,7 +258,15 @@ bool ubigint::operator== (const ubigint& that) const {
 }
 
 bool ubigint::operator< (const ubigint& that) const {
-   //return uvalue < that.uvalue;
+   auto u_itor = ubig_value.crbegin();
+   auto u_titor = that.ubig_value.crbegin();
+   while(u_itor != ubig_value.crend() and u_titor != that.ubig_value.crend()) {
+	if (*u_itor > *u_titor){
+		return false;
+	} // else... 
+        ++u_itor;
+	++u_titor;  
+    }
     return true; // test
 }
 
