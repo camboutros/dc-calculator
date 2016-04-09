@@ -160,6 +160,27 @@ void ubigint::divide_by_2() {
   // uvalue /= 2; test
 }
 
+int ubigint::get_vector_size() const{
+	return ubig_value.size();
+}
+
+bool ubigint_check_difference_true(ubigint& first, ubigint& second) {
+	 bool difference;
+	 auto u_itor = first.ubig_value.cbegin();
+  	 auto u_titor = second.that.ubig_value.cbegin();
+	
+		while(u_itor != ubig_value.end() and u_titor != that.ubig_value.end()) {
+		if (not(*u_itor == *u_titor){ 
+			difference = true;     // difference found
+		}  else { difference = false}; // no difference
+	
+		++u_itor;
+		++u_titor;
+
+		}
+	return difference;
+}
+
 
 struct quo_rem { ubigint quotient; ubigint remainder; };
 quo_rem udivide (const ubigint& dividend, ubigint divisor) {

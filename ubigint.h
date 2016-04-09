@@ -41,6 +41,9 @@ class ubigint {
    public:
       void multiply_by_2();
       void divide_by_2();
+      
+      int get_vector_size() const;
+      bool ubigint_check_difference_true(ubigint&, ubigint&);
 
       ubigint() = default; // Need default ctor as well.
       ubigint (unsigned long);

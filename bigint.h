@@ -33,6 +33,9 @@ class bigint {
       bigint (const ubigint&, bool is_negative = false);
       explicit bigint (const string&);
 
+      int get_size() const; 
+      bool check_difference_true(ubigint&, ubigint&);
+
       bigint operator+() const;
       bigint operator-() const;
 

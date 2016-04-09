@@ -33,6 +33,16 @@ bigint::bigint (const string& that) {
 
 }
 
+int bigint::get_size() const {
+	int return_size = uvalue.get_vector_size() ;
+	return return_size;
+}
+
+bool bigint::check_difference_true(ubigint& first, ubigint& second) {
+	bool difference = ubigint::ubigint_check_difference_true(first, second);
+        return difference;
+}
+
 bigint bigint::operator+ () const {
    return *this;
 }
@@ -41,12 +51,13 @@ bigint bigint::operator- () const {
    return {uvalue, not is_negative};
 }
 
+
 bigint bigint::operator+ (const bigint& that) const {
    ubigint ubig_result;
    bigint final_result;
    // test
    //cout << "first bigint value: " << uvalue << endl;
-   //cout << "second bigint value: " << that.uvalue << endl;
+   cout << "second bigint value: " << that.uvalue << endl;
    
    // If signs are the same... 
    if ((is_negative == that.is_negative)) { 
@@ -91,8 +102,15 @@ bigint bigint::operator% (const bigint& that) const {
    return result;
 }
 
-bool bigint::operator== (const bigint& that) const {
-   return is_negative == that.is_negative and uvalue == that.uvalue;
+bool bigint::operator== (const bigint& that) const{
+   int size_1 = this.get_size();
+   int size_2 = that.get_size();
+   if (not((is_negative == that.is_negative) and (size_1 == size_2))){
+	if (check_difference_true(uvalue, that.uvalue)) { //difference found 
+		return false; //bigints not the same
+	}
+   }
+   return true; 
 }
 
 bool bigint::operator< (const bigint& that) const {
