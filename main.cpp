@@ -22,9 +22,11 @@ using bigint_stack = iterstack<bigint>;
 void do_arith (bigint_stack& stack, const char oper) {
    if (stack.size() < 2) throw ydc_exn ("stack empty");
    bigint right = stack.top();
+   //cout << "right = " << right << stack.top(); // test
    stack.pop();
    DEBUGF ('d', "right = " << right);
    bigint left = stack.top();
+   //cout << "left = " << left << stack.top(); // test
    stack.pop();
    DEBUGF ('d', "left = " << left);
    bigint result;

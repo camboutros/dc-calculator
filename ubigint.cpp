@@ -30,7 +30,10 @@ ubigint::ubigint (const string& that): ubig_value(0) {
 	ubig_value.push_back(*ritor - '0');
   }
   /////////// Trim Trailing Zeros ///////////////
-  while (ubig_value.size() > 0 and ubig_value.back() == 0 )   ubig_value.pop_back();   
+  while (ubig_value.size() > 0 and ubig_value.back() == 0 )   ubig_value.pop_back();  
+
+  /// Set printable value ... ///////////////////
+   printable_value = that; //lazy way
 }
 
 ubigint ubigint::operator+ (const ubigint& that) const {
@@ -39,7 +42,7 @@ ubigint ubigint::operator+ (const ubigint& that) const {
    char carry = 0;
    udigit_t sum_char;
    ubigint result;
-   
+   //cout << "test ... hit in ubigint addition operator... " << endl;
    while(u_itor != ubig_value.end() and u_titor != that.ubig_value.end()) {
 	sum_char = *u_itor + *u_titor;
 		if(carry == 1) {
@@ -55,7 +58,8 @@ ubigint ubigint::operator+ (const ubigint& that) const {
 	++u_titor;
 	}
    if (carry == 1 ) {
-	cout << "WARNING: CARRY OVERFLOW" << endl; //fix later
+	udigit_t carry_char = ('1' - '0');
+	result.ubig_value.push_back(carry_char);
    }
   
     ///////////// ... In the event that one arg is longer than the other... //////////	
@@ -70,13 +74,77 @@ ubigint ubigint::operator+ (const ubigint& that) const {
    }
    /////////////////////////////////////////////////
 
+   ///// Make a printable version of ubigint result.... /////////
+   udigit_t holdchar;
+   auto ritor = result.ubig_value.crbegin();
+   while (ritor != result.ubig_value.crend()){
+	holdchar = *ritor;
+	result.printable_value += holdchar;
+	cout << (*ritor - '0') << " test ritor value  " << endl; // test change later; working in offset
+        cout << result.printable_value << " test printable_value  " << endl; // test
+	ritor++;
+   }
+
+   //////////////////////////////////////////////////////////////
+	
    return result; //check; does this work?
 }
 
 ubigint ubigint::operator- (const ubigint& that) const {
-   //if (*this < that) throw domain_error ("ubigint::operator-(a<b)");
-   //return ubigint (uvalue - that.uvalue);
-   return that; // test
+   auto u_itor = ubig_value.cbegin();
+   auto u_titor = that.ubig_value.cbegin();
+   char borrow = 0;
+   udigit_t diff_char;
+   ubigint result;
+
+  while(u_itor != ubig_value.end() and u_titor != that.ubig_value.end()) {
+	if (*u_itor < *u_titor){ // set carry 
+		borrow = -1;
+		diff_char = (*u_itor + 10);
+	}  
+		diff_char = (*u_itor - *u_titor);
+		if(borrow == 1) {
+			diff_char = diff_char - 1;
+			borrow = 0; // reset carry
+		}
+		
+	result.ubig_value.push_back(diff_char);
+	++u_itor;
+	++u_titor;
+
+	}
+   if (borrow == -1 ) {
+	cout << "WARNING: CARRY OVERFLOW" << endl; //fix later
+   }
+
+ ///////////// ... In the event that one arg is longer than the other... //////////	
+    while(u_itor != ubig_value.end()){
+	result.ubig_value.push_back(*u_itor);
+	++u_itor;
+   }
+	 
+   while(u_titor != that.ubig_value.end()){
+	result.ubig_value.push_back(*u_titor);
+	++u_titor;
+   }
+   /////////////////////////////////////////////////
+
+ ///// Make a printable version of ubigint result.... /////////
+   udigit_t holdchar;
+   auto ritor = result.ubig_value.crbegin();
+   while (ritor != result.ubig_value.crend()){
+	holdchar = *ritor;
+	result.printable_value += holdchar;
+	cout << (*ritor - '0') << " test ritor value  " << endl; // test change later; working in offset
+        cout << result.printable_value << " test printable_value  " << endl; // test
+	ritor++;
+   }
+
+   //////////////////////////////////////////////////////////////
+	
+  
+
+   return result; // test
 }
 
 ubigint ubigint::operator* (const ubigint& that) const {
@@ -135,8 +203,7 @@ bool ubigint::operator< (const ubigint& that) const {
 }
 
 ostream& operator<< (ostream& out, const ubigint& that) { 
-   //return out << "ubigint(" << that.uvalue << ")";
    
-   return out << "ubigint(" ")"; //test
+   return out << that.printable_value; 
 }
 
