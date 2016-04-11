@@ -20,15 +20,6 @@ using namespace std;
 #include "debug.h"
 #include "relops.h"
 
-//////////// Iterators ///////////////////
-// vector<unsigned char>::const_reverse_iterator ritor; //reverse iterator //through string
-//      vector<unsigned char>:: const_iterator itor; //iterator through string
-//      vector<unsigned char>:: const_iterator titor; //iterator through string for temporary vector
-//      vector<udigit_t>:: const_reverse_iterator u_ritor; // reverse iterator through ubig_value
-//      vector<udigit_t>:: const_iterator u_itor; //iterator through ubig_value
-//      vector<udigit_t>:: const_iterator u_titor; //iterator through ubig_value
-//     
-//////////////////////////////////////////
 
 class ubigint {
    friend ostream& operator<< (ostream&, const ubigint&);
@@ -40,7 +31,7 @@ class ubigint {
       int u_vector_size; 
      
    public:
-      vector<string> printable_value;
+      vector<string> p_v;
       void multiply_by_2();
       void divide_by_2();
       

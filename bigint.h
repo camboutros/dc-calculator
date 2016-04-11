@@ -33,7 +33,7 @@ class bigint {
       bigint (const ubigint&, bool is_negative = false);
       explicit bigint (const string&);
 
-      int vector_size;
+      int v_s; //vector_size
      
 
       bigint operator+() const;
@@ -45,7 +45,7 @@ class bigint {
       bigint operator/ (const bigint&) const;
       bigint operator% (const bigint&) const;
 
-      bool operator== (const bigint&) const; // could use ubigint's version
+      bool operator== (const bigint&) const; 
       bool operator<  (const bigint&) const;
 };
 

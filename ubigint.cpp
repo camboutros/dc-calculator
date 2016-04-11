@@ -20,14 +20,14 @@ using namespace std;
 
 ubigint::ubigint (unsigned long that): ubig_value (that) {
    DEBUGF ('~', this << " -> " << 5)
-   printable_value = {}; // fix
+      p_v = {}; // fix
    unsigned char push_char;
    int work_num;
    while (that > 0 ) {
-  	 work_num = that % 10;
- 	 push_char  = 10 - work_num;
-  	 that = that / 10;
-	 ubig_value.push_back(push_char);
+         work_num = that % 10;
+         push_char  = 10 - work_num;
+         that = that / 10;
+         ubig_value.push_back(push_char);
    }
    u_vector_size = ubig_value.size(); // init u_vector_size
 }
@@ -37,17 +37,17 @@ ubigint::ubigint (const string& that): ubig_value(0) {
 
   /////////// Initialize Container //////////////
   for(auto ritor = that.crbegin(); ritor != that.crend(); ++ritor){
-	ubig_value.push_back(*ritor);
+       ubig_value.push_back(*ritor);
        
    //cout << "current digit = " << *ritor << endl;//test
-   printable_value.push_back(to_string((*ritor - '0' )));
+      p_v.push_back(to_string((*ritor - '0' )));
   }
-  //cout << "current printable_value in constructor: " << *this << endl; // test
   /////////// Trim Trailing Zeros ///////////////
-  while (ubig_value.size() > 0 and ubig_value.back() == 0 )   ubig_value.pop_back();  
-
-  /// Set printable_value ... ///////////////////
-  // printable_value  //lazy way
+  while (ubig_value.size() > 0 and ubig_value.back() == 0 ){
+     ubig_value.pop_back();  
+  }
+  /// Set    p_v ... ///////////////////
+  //    p_v  //lazy way
 
   /// Set Vector Size ////////////////////
   u_vector_size = ubig_value.size();
@@ -60,85 +60,67 @@ ubigint ubigint::operator+ (const ubigint& that) const {
    udigit_t sum_char;
    ubigint result;
    
-   while(u_itor != ubig_value.end() and u_titor != that.ubig_value.end()) {
-	sum_char = (*u_itor + *u_titor - '0'); //converted down for arithmetic
-	
-	
-		if(carry == 1) {
-			
-			sum_char = sum_char + '1' - '0';
-			carry = 0; // reset carry
-		}
-		if ((sum_char) > 57) { // '57' is ASCII for '9'	
-			
-			sum_char = sum_char - 10 ;
-                        sum_char = sum_char + 0;
-		
-			carry = 1; // set carry
-		}
-	result.ubig_value.push_back((sum_char - '0'));
-	
-	
-	++u_itor;
-	++u_titor;
-	   
-   }
+ while(u_itor != ubig_value.end() and u_titor != that.ubig_value.end()){
+        sum_char = (*u_itor + *u_titor - '0'); //conv down
+              if(carry == 1) {
+                   sum_char = sum_char + '1' - '0';
+                   carry = 0; // reset carry
+              }
+              if ((sum_char) > 57) { // '57' is ASCII for '9'
+                    sum_char = sum_char - 10 ;
+                    sum_char = sum_char + 0;
+                    carry = 1; // set carry
+              }
+        result.ubig_value.push_back((sum_char - '0'));
+        ++u_itor;
+        ++u_titor;   
+ }
   
-    ///////////// ... In the event that one arg is longer than the other... //////////	
-    while (u_itor != ubig_value.end()){
-	
- 	sum_char = (*u_itor); 
-	
-	if(carry == 1) {
-			
-			sum_char = sum_char + '1' - '0';
-			carry = 0; // reset carry
-			
-		}	
-	if ((sum_char) > 57) { // '57' is ASCII for '9'	
-			sum_char = sum_char - 10 ;
-                        sum_char = sum_char + 0;
-			carry = 1; // set carry
-		}
-	result.ubig_value.push_back((sum_char - '0'));
-	++u_itor;
-   }
-	 
+    ///////////// One arg is longer than the other... //////////
+       while (u_itor != ubig_value.end()){
+        sum_char = (*u_itor); 
+        if(carry == 1) {
+               sum_char = sum_char + '1' - '0';
+               carry = 0; // reset carry
+        }
+        if ((sum_char) > 57) { // '57' is ASCII for '9'
+               sum_char = sum_char - 10 ;
+               sum_char = sum_char + 0;
+               carry = 1; // set carry
+        }
+        result.ubig_value.push_back((sum_char - '0'));
+        ++u_itor;
+   } 
    while (u_titor != that.ubig_value.end()){
-	
-	sum_char = (*u_titor); 
-	
-	if(carry == 1) {
-			sum_char = sum_char + '1' - '0';
-			carry = 0; // reset carry
-		}	
-	if ((sum_char) > 57) { // '57' is ASCII for '9'	
-			sum_char = sum_char - 10 ;
-                        sum_char = sum_char + 0;
-			carry = 1; // set carry
-		}
-	result.ubig_value.push_back((sum_char - '0'));
-	++u_titor;
+        sum_char = (*u_titor); 
+        if(carry == 1) {
+           sum_char = sum_char + '1' - '0';
+           carry = 0; // reset carry
+        }
+        if ((sum_char) > 57) { // '57' is ASCII for '9'
+             sum_char = sum_char - 10 ;
+             sum_char = sum_char + 0;
+             carry = 1; // set carry
+        }
+        result.ubig_value.push_back((sum_char - '0'));
+        ++u_titor;
    }
-/////////////////////////////////////////////////////////
+   //////////////////////////////////////////////////////////////
    //////////////// Final Carry /////////////////////////////////
    if (carry == 1 ) {
-	result.ubig_value.push_back('1' - '0'); // leftover
+         result.ubig_value.push_back('1' - '0'); // leftover
    } 
   ////////////////////////////////////////////////////////
    ///// Make a printable version of ubigint result.... /////////
-   udigit_t holdchar;
-   
+   udigit_t holdchar;   
    auto ritor = result.ubig_value.cbegin();
    while (ritor != result.ubig_value.cend()){
-	holdchar = *ritor;
-	result.printable_value.push_back( to_string(holdchar));
-	ritor++;
+        holdchar = *ritor;
+        result.   p_v.push_back( to_string(holdchar));
+        ritor++;
    }
-  
    //////////////////////////////////////////////////////////////
-	
-   return result; //check; does this work?
+   return result; 
 }
 
 
@@ -147,61 +129,91 @@ ubigint ubigint::operator- (const ubigint& that) const {
    auto u_titor = that.ubig_value.cbegin();
    int borrow = 0;
    udigit_t diff_char;
-   ubigint result;
-
-  while(u_itor != ubig_value.end() and u_titor != that.ubig_value.end()) {
-	diff_char = ((*u_itor - *u_titor - '0'));
-	if(borrow == 1) {
-		diff_char = diff_char - '1' + '0';
-		borrow = 0; // reset carry
-	}
-	if (*u_itor < *u_titor){ // set borrow-carry
-		diff_char = diff_char + 10 + 0;
-		borrow = -1;
-	}  
-	cout << "diff_char = " << (diff_char - '0' )<< endl; //test
-	result.ubig_value.push_back((diff_char - '0'));
-
-	++u_itor;
-	++u_titor;
-
-	}
-   if (borrow == -1 ) {
-	cout << "WARNING: CARRY OVERFLOW" << endl; //fix later
-   }
- ///////////// ... In the event that one arg is longer than the other... //////////	
-    while(u_itor != ubig_value.end()){
-	result.ubig_value.push_back((*u_itor - '0'));
-	++u_itor;
-   }
-	 
-   while(u_titor != that.ubig_value.end()){
-	result.ubig_value.push_back((*u_titor - '0'));
-	++u_titor;
-   }
-
-   /////////////////////////////////////////////////
-
- ///// Make a printable version of ubigint result.... /////////
-   udigit_t holdchar;
-   auto ritor = result.ubig_value.cbegin();
-   while (ritor != result.ubig_value.cend()){
-	holdchar = *ritor;
-	result.printable_value.push_back(to_string(holdchar));
-	ritor++;
-   }
-
-   //////////////////////////////////////////////////////////////
-	
+   ubigint r; //result
+   int workspace = 0; // to do arithmetic 
   
+ while(u_itor != ubig_value.end() and u_titor != that.ubig_value.end()){
+         diff_char = *u_titor;
+         if(borrow == -1) {
+               diff_char = diff_char - '1' + '0';
+               borrow = 0; // reset carry   
+         }
+        if (diff_char < *u_itor){ 
+              //cout << "hit comparison " << endl; //test
+              diff_char = diff_char + 10;
+              diff_char = diff_char + 0;
+            
+              workspace = (diff_char - '0');
+           
+              workspace = workspace - (*u_itor - '0') ;
+             
+              borrow = -1; // set borrow-carry
+              diff_char = (workspace + '0');
+             
+         } else {  
+                workspace = (diff_char);
+                workspace = (*u_itor - '0') - workspace ; 
+                diff_char = ((workspace + '0')); 
+               
+         }
+        
+        
+         //cout << "Pushing back " << (diff_char - '0') << endl; //test
+         r.ubig_value.push_back((diff_char - '0'));
+         ++u_itor;
+         ++u_titor;
+         
+ }
 
-   return result; // test
+ ///////////// One arg is longer than the other... //////////
+    while(u_titor != that.ubig_value.end()){
+        diff_char = (*u_titor);
+
+        if(borrow == -1) {
+             if (diff_char != '0') { // or equivalent... mess
+                 diff_char = diff_char - '1' + '0';
+                 borrow = 0; // reset carry
+              } // else, do not reset carry, push zero. 
+        }
+
+        r.ubig_value.push_back((diff_char - '0'));
+        ++u_titor;
+   } 
+   while(u_itor != ubig_value.end()){
+        diff_char = (*u_itor);
+        if(borrow == -1) {
+             diff_char = diff_char - '1' + '0';
+             borrow = 0; // reset carry
+        }
+        
+        r.ubig_value.push_back((diff_char - '0'));
+        ++u_itor;
+   }  
+     // if (borrow == -1 ) {
+     //      cout << "WARNING: CARRY OVERFLOW" << endl; //fix later
+   //}
+ ////////////////////////////////////////////
+ ///////// Trim Trailing Zeroes /////////////
+   while (r.ubig_value.size() > 0 and r.ubig_value.back() == 0 ){
+     r.ubig_value.pop_back();  
+  }
+ //////////////////////////////////////////////////////////////
+ ///// Make a printable version of ubigint result....   ///////
+   udigit_t holdchar;
+   auto ritor = r.ubig_value.cbegin();
+   while (ritor != r.ubig_value.cend()){
+        holdchar = *ritor;
+        r.p_v.push_back(to_string(holdchar));
+        ritor++;
+   }
+   //////////////////////////////////////////////////////////////
+   return r; // test
 }
 
 ubigint ubigint::operator* (const ubigint& that) const {
    ubigint product; 
    
-   product.ubig_value[u_vector_size + that.u_vector_size]; // inits vector to sum of sizes 
+   product.ubig_value[u_vector_size + that.u_vector_size]; 
    int base_place = 0;
    udigit_t store_char;
    //udigit_t temp;
@@ -209,44 +221,37 @@ ubigint ubigint::operator* (const ubigint& that) const {
    int sum;
    
    
-   for (auto i = ubig_value.cbegin(); i != ubig_value.cend(); i++){
-	
-	for (auto j = that.ubig_value.cbegin(); j != that.ubig_value.cend(); j++){
-	
-		sum = ((*i - '0') * ( *j - '0')) + carry;
-		if (sum > 9){
-			 store_char = ((10 -((*i * *j) % 10) ) + '0');
-                         carry = ((*i * *j)/ 10);
-			  product.ubig_value.insert((j + base_place),( store_char + '0')); // fix
-
-			 
-			if (j == (that.ubig_value.cend() - 1)){
-				product.ubig_value.push_back(carry + '0');
-			}
-		} else {
-			carry = 0; // reset carry 
-			store_char = sum + '0';
-			product.ubig_value.insert((j + base_place),( store_char + '0')); // fix
-		}
-			 
-	}
-	base_place = base_place + 1;
+ for (auto i = ubig_value.cbegin(); i != ubig_value.cend(); i++){
+  for(auto j=that.ubig_value.cbegin();j!=that.ubig_value.cend(); j++){
+   sum = ((*i - '0') * ( *j - '0')) + carry;
+   if (sum > 9){
+     store_char = ((10 -((*i * *j) % 10) ) + '0');
+     carry = ((*i * *j)/ 10);
+     product.ubig_value.insert((j + base_place),( store_char + '0')); 
+        if (j == (that.ubig_value.cend() - 1)){
+              product.ubig_value.push_back(carry + '0');
+        }
+     } else {
+       carry = 0; // reset carry 
+       store_char = sum + '0';
+       product.ubig_value.insert((j + base_place),( store_char + '0')); 
+     } 
    }
-	
+  base_place = base_place + 1;
+ }
    return product; // test
 }
-
 void ubigint::multiply_by_2() {
    //udigit_t store_char;
    //char carry = 0;
-   //for (auto i = ubig_value.cbegin(); i != ubig_value.cend(); i++){
-        
-   //	if ((((*i * 2) + carry) > 9 )){ // make sure types add up
-   //		store_char = ((*i * 2) - 10);
-   //		carry = 1;
-   //		ubig_value.at(i) = store_char; // check syntax
-   //	} 
-   // fix/test	 
+   //for (auto i = ubig_value.cbegin();i!= ubig_value.cend(); i++){
+   //    if ((((*i * 2) + carry) > 9 )){ // make sure types add up
+   //        store_char = ((*i * 2) - 10);
+   //        carry = 1;
+   //        ubig_value.at(i) = store_char; // check syntax
+   //     }
+   //} 
+   // fix//test
 }
 
 void ubigint::divide_by_2() {
@@ -254,10 +259,8 @@ void ubigint::divide_by_2() {
 }
 
 int ubigint::get_vector_size() {
-	return u_vector_size;
+      return u_vector_size;
 }
-
-
 
 struct quo_rem { ubigint quotient; ubigint remainder; };
 quo_rem udivide (const ubigint& dividend, ubigint divisor) {
@@ -291,35 +294,34 @@ ubigint ubigint::operator% (const ubigint& that) const {
 }
 
 bool ubigint::operator== (const ubigint& that) const {
-   auto u_itor = ubig_value.cbegin();
-   auto u_titor = that.ubig_value.cbegin();
-   while(u_itor != ubig_value.end() and u_titor != that.ubig_value.end()) {
-	if (*u_itor != *u_titor){
-		return false;
-	} // else... 
-        ++u_itor;
-	++u_titor;  
-    }
-    return true;
+ auto u_itor = ubig_value.cbegin();
+ auto u_titor = that.ubig_value.cbegin();
+ while(u_itor != ubig_value.end() and u_titor != that.ubig_value.end()){
+       if (*u_itor != *u_titor){
+             return false;
+       } // else...
+       ++u_itor;
+       ++u_titor;  
+ }
+ return true;
 }
 
 bool ubigint::operator< (const ubigint& that) const {
-   auto u_itor = ubig_value.crbegin();
-   auto u_titor = that.ubig_value.crbegin();
-   while(u_itor != ubig_value.crend() and u_titor != that.ubig_value.crend()) {
-	if (*u_itor > *u_titor){
-		return false;
-	} // else... 
-        ++u_itor;
-	++u_titor;  
-    }
-    return true; // test
+ auto u_i = ubig_value.crbegin();
+ auto u_t = that.ubig_value.crbegin();
+ while(u_i != ubig_value.crend() and u_t != that.ubig_value.crend()){
+        if (*u_i > *u_t){
+            return false;
+        } // else... 
+        ++u_i;
+        ++u_t;  
+ }
+ return true; // test
 }
-
 ostream& operator<< (ostream& out, const ubigint& that) { 
   string printable;
-  for (auto i = that.printable_value.rbegin(); i != that.printable_value.rend(); i++){
-  	printable = printable.append( *i);
+  for (auto i = that.   p_v.rbegin(); i != that.   p_v.rend(); i++){
+          printable = printable.append( *i);
     }
    return out << printable; 
 }
