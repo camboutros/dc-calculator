@@ -81,9 +81,15 @@ bigint bigint::operator+ (const bigint& that) const {
 bigint bigint::operator- (const bigint& that) const {
    ubigint result;
    bigint final_result;
+
     if (is_negative == that.is_negative) { //signs are the same
-	result = uvalue - that.uvalue;
-        final_result.is_negative = is_negative; 
+	if (uvalue > that.uvalue ){
+		final_result.is_negative = is_negative; 
+		result = uvalue - that.uvalue;	
+	} else if (uvalue < that.uvalue ) {
+		final_result.is_negative = that.is_negative;
+		result = that.uvalue - uvalue;
+	}
     } else { // signs are different
 	result = uvalue + that.uvalue;
 	final_result.is_negative = ((uvalue > that.uvalue)? is_negative : that.is_negative);

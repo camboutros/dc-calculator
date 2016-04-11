@@ -62,41 +62,70 @@ ubigint ubigint::operator+ (const ubigint& that) const {
    
    while(u_itor != ubig_value.end() and u_titor != that.ubig_value.end()) {
 	sum_char = (*u_itor + *u_titor - '0'); //converted down for arithmetic
-	//cout << sum_char << " initial sum_char value ... " << endl; //test
+	
 	
 		if(carry == 1) {
-			cout << "hit carry" << endl; //test
+			
 			sum_char = sum_char + '1' - '0';
 			carry = 0; // reset carry
 		}
-		if ((sum_char) > 57) { // '57' is ASCII for '9'
-			cout << "hit sum > 9" << endl; //test
-			sum_char = sum_char - 10;
-			sum_char = sum_char + 0;
+		if ((sum_char) > 57) { // '57' is ASCII for '9'	
+			
+			sum_char = sum_char - 10 ;
+                        sum_char = sum_char + 0;
+		
 			carry = 1; // set carry
 		}
 	result.ubig_value.push_back((sum_char - '0'));
 	
+	
 	++u_itor;
 	++u_titor;
-	}
-   if (carry == 1 ) {
-	result.ubig_value.push_back('1' - '0');
-        cout << "storing carry: " << ('1' - '0') << endl; //test
+	   
    }
   
     ///////////// ... In the event that one arg is longer than the other... //////////	
-    while(u_itor != ubig_value.end()){
-	result.ubig_value.push_back((*u_itor - '0'));
+    while (u_itor != ubig_value.end()){
+	
+ 	sum_char = (*u_itor); 
+	
+	if(carry == 1) {
+			
+			sum_char = sum_char + '1' - '0';
+			carry = 0; // reset carry
+			
+		}	
+	if ((sum_char) > 57) { // '57' is ASCII for '9'	
+			sum_char = sum_char - 10 ;
+                        sum_char = sum_char + 0;
+			carry = 1; // set carry
+		}
+	result.ubig_value.push_back((sum_char - '0'));
 	++u_itor;
    }
 	 
-   while(u_titor != that.ubig_value.end()){
-	result.ubig_value.push_back((*u_titor - '0'));
+   while (u_titor != that.ubig_value.end()){
+	
+	sum_char = (*u_titor); 
+	
+	if(carry == 1) {
+			sum_char = sum_char + '1' - '0';
+			carry = 0; // reset carry
+		}	
+	if ((sum_char) > 57) { // '57' is ASCII for '9'	
+			sum_char = sum_char - 10 ;
+                        sum_char = sum_char + 0;
+			carry = 1; // set carry
+		}
+	result.ubig_value.push_back((sum_char - '0'));
 	++u_titor;
    }
-   /////////////////////////////////////////////////
-
+/////////////////////////////////////////////////////////
+   //////////////// Final Carry /////////////////////////////////
+   if (carry == 1 ) {
+	result.ubig_value.push_back('1' - '0'); // leftover
+   } 
+  ////////////////////////////////////////////////////////
    ///// Make a printable version of ubigint result.... /////////
    udigit_t holdchar;
    
@@ -104,14 +133,14 @@ ubigint ubigint::operator+ (const ubigint& that) const {
    while (ritor != result.ubig_value.cend()){
 	holdchar = *ritor;
 	result.printable_value.push_back( to_string(holdchar));
-	//cout << (*ritor + 0 ) << " test ritor value  " << endl; // test 
 	ritor++;
    }
-
+  
    //////////////////////////////////////////////////////////////
 	
    return result; //check; does this work?
 }
+
 
 ubigint ubigint::operator- (const ubigint& that) const {
    auto u_itor = ubig_value.cbegin();
@@ -121,17 +150,18 @@ ubigint ubigint::operator- (const ubigint& that) const {
    ubigint result;
 
   while(u_itor != ubig_value.end() and u_titor != that.ubig_value.end()) {
-	if (*u_itor < *u_titor){ // set carry 
+	diff_char = ((*u_itor - *u_titor - '0'));
+	if(borrow == 1) {
+		diff_char = diff_char - '1' + '0';
+		borrow = 0; // reset carry
+	}
+	if (*u_itor < *u_titor){ // set borrow-carry
+		diff_char = diff_char + 10 + 0;
 		borrow = -1;
-		diff_char = (*u_itor + 10);
 	}  
-		diff_char = (*u_itor - *u_titor);
-		if(borrow == 1) {
-			diff_char = diff_char - 1;
-			borrow = 0; // reset carry
-		}
-		
-	result.ubig_value.push_back(diff_char);
+	cout << "diff_char = " << (diff_char - '0' )<< endl; //test
+	result.ubig_value.push_back((diff_char - '0'));
+
 	++u_itor;
 	++u_titor;
 
@@ -139,7 +169,6 @@ ubigint ubigint::operator- (const ubigint& that) const {
    if (borrow == -1 ) {
 	cout << "WARNING: CARRY OVERFLOW" << endl; //fix later
    }
-
  ///////////// ... In the event that one arg is longer than the other... //////////	
     while(u_itor != ubig_value.end()){
 	result.ubig_value.push_back((*u_itor - '0'));
@@ -150,6 +179,7 @@ ubigint ubigint::operator- (const ubigint& that) const {
 	result.ubig_value.push_back((*u_titor - '0'));
 	++u_titor;
    }
+
    /////////////////////////////////////////////////
 
  ///// Make a printable version of ubigint result.... /////////
@@ -158,8 +188,6 @@ ubigint ubigint::operator- (const ubigint& that) const {
    while (ritor != result.ubig_value.cend()){
 	holdchar = *ritor;
 	result.printable_value.push_back(to_string(holdchar));
-	//cout << (*ritor - 0) << " test ritor value in +  " << endl; // test change later; working in offset
-        //cout << result.printable_value << " test printable_value  " << endl; // test
 	ritor++;
    }
 
