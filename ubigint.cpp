@@ -76,7 +76,7 @@ ubigint ubigint::operator+ (const ubigint& that) const {
 			carry = 1; // set carry
 		}
 	result.ubig_value.push_back((sum_char - '0'));
-	cout << sum_char << " sum_char, " << (sum_char + 0) << " + 0 , " << (sum_char + '0') << " + '0', " << (sum_char - 0) << " - 0 , " << (sum_char - '0') << "and last " <<endl; //test
+	
 	++u_itor;
 	++u_titor;
 	}
@@ -87,12 +87,12 @@ ubigint ubigint::operator+ (const ubigint& that) const {
   
     ///////////// ... In the event that one arg is longer than the other... //////////	
     while(u_itor != ubig_value.end()){
-	result.ubig_value.push_back(*u_itor);
+	result.ubig_value.push_back((*u_itor - '0'));
 	++u_itor;
    }
 	 
    while(u_titor != that.ubig_value.end()){
-	result.ubig_value.push_back(*u_titor);
+	result.ubig_value.push_back((*u_titor - '0'));
 	++u_titor;
    }
    /////////////////////////////////////////////////
