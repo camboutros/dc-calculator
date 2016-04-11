@@ -53,13 +53,13 @@ bigint bigint::operator+ (const bigint& that) const {
    bigint final_result;
    // test
    //cout << "first bigint value: " << uvalue << endl;
-   cout << "second bigint value: " << that.uvalue << endl;
+   //cout << "second bigint value: " << that.uvalue << endl;
    
    // If signs are the same... 
    if ((is_negative == that.is_negative)) { 
 	ubig_result = uvalue + that.uvalue; 
         final_result.is_negative = is_negative;
-	//cout << "test... hit in bigint add signs the same.. " << endl;
+	
    }
  
    else { // ... Else, signs are different ... 

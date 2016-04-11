@@ -36,10 +36,11 @@ class ubigint {
       using udigit_t = unsigned char;
       using ubigvalue_t = vector<udigit_t>;
        ubigvalue_t ubig_value;
-      string printable_value;
+      
       int u_vector_size; 
      
    public:
+      vector<string> printable_value;
       void multiply_by_2();
       void divide_by_2();
       

@@ -20,7 +20,7 @@ using namespace std;
 
 ubigint::ubigint (unsigned long that): ubig_value (that) {
    DEBUGF ('~', this << " -> " << 5)
-   printable_value = ""; // fix
+   printable_value = {}; // fix
    unsigned char push_char;
    int work_num;
    while (that > 0 ) {
@@ -33,17 +33,21 @@ ubigint::ubigint (unsigned long that): ubig_value (that) {
 }
 
 ubigint::ubigint (const string& that): ubig_value(0) {
-  //vector<unsigned char>::const_reverse_iterator ritor = that.rbegin();
+
 
   /////////// Initialize Container //////////////
   for(auto ritor = that.crbegin(); ritor != that.crend(); ++ritor){
-	ubig_value.push_back(*ritor - '0');
+	ubig_value.push_back(*ritor);
+       
+   //cout << "current digit = " << *ritor << endl;//test
+   printable_value.push_back(to_string((*ritor - '0' )));
   }
+  //cout << "current printable_value in constructor: " << *this << endl; // test
   /////////// Trim Trailing Zeros ///////////////
   while (ubig_value.size() > 0 and ubig_value.back() == 0 )   ubig_value.pop_back();  
 
   /// Set printable_value ... ///////////////////
-   printable_value = that; //lazy way
+  // printable_value  //lazy way
 
   /// Set Vector Size ////////////////////
   u_vector_size = ubig_value.size();
@@ -52,27 +56,33 @@ ubigint::ubigint (const string& that): ubig_value(0) {
 ubigint ubigint::operator+ (const ubigint& that) const {
    auto u_itor = ubig_value.cbegin();
    auto u_titor = that.ubig_value.cbegin();
-   char carry = 0;
+   int carry = 0;
    udigit_t sum_char;
    ubigint result;
-   //cout << "test ... hit in ubigint addition operator... " << endl;
+   
    while(u_itor != ubig_value.end() and u_titor != that.ubig_value.end()) {
-	sum_char = *u_itor + *u_titor;
+	sum_char = (*u_itor + *u_titor - '0'); //converted down for arithmetic
+	//cout << sum_char << " initial sum_char value ... " << endl; //test
+	
 		if(carry == 1) {
-			sum_char = sum_char + 1;
+			cout << "hit carry" << endl; //test
+			sum_char = sum_char + '1' - '0';
 			carry = 0; // reset carry
 		}
-		if ((sum_char) > 9) {
+		if ((sum_char) > 57) { // '57' is ASCII for '9'
+			cout << "hit sum > 9" << endl; //test
 			sum_char = sum_char - 10;
+			sum_char = sum_char + 0;
 			carry = 1; // set carry
 		}
-	result.ubig_value.push_back(sum_char);// possible error - sum may be too big. If so, subtract 10.
+	result.ubig_value.push_back((sum_char - '0'));
+	cout << sum_char << " sum_char, " << (sum_char + 0) << " + 0 , " << (sum_char + '0') << " + '0', " << (sum_char - 0) << " - 0 , " << (sum_char - '0') << "and last " <<endl; //test
 	++u_itor;
 	++u_titor;
 	}
    if (carry == 1 ) {
-	udigit_t carry_char = ('1' - '0');
-	result.ubig_value.push_back(carry_char);
+	result.ubig_value.push_back('1' - '0');
+        cout << "storing carry: " << ('1' - '0') << endl; //test
    }
   
     ///////////// ... In the event that one arg is longer than the other... //////////	
@@ -89,12 +99,12 @@ ubigint ubigint::operator+ (const ubigint& that) const {
 
    ///// Make a printable version of ubigint result.... /////////
    udigit_t holdchar;
-   auto ritor = result.ubig_value.crbegin();
-   while (ritor != result.ubig_value.crend()){
+   
+   auto ritor = result.ubig_value.cbegin();
+   while (ritor != result.ubig_value.cend()){
 	holdchar = *ritor;
-	result.printable_value += holdchar;
-	cout << (*ritor - '0') << " test ritor value  " << endl; // test change later; working in offset
-        cout << result.printable_value << " test printable_value  " << endl; // test
+	result.printable_value.push_back( to_string(holdchar));
+	//cout << (*ritor + 0 ) << " test ritor value  " << endl; // test 
 	ritor++;
    }
 
@@ -147,9 +157,9 @@ ubigint ubigint::operator- (const ubigint& that) const {
    auto ritor = result.ubig_value.crbegin();
    while (ritor != result.ubig_value.crend()){
 	holdchar = *ritor;
-	result.printable_value += holdchar;
-	cout << (*ritor - '0') << " test ritor value  " << endl; // test change later; working in offset
-        cout << result.printable_value << " test printable_value  " << endl; // test
+	result.printable_value.push_back(to_string(holdchar));
+	cout << (*ritor - 0) << " test ritor value in +  " << endl; // test change later; working in offset
+        //cout << result.printable_value << " test printable_value  " << endl; // test
 	ritor++;
    }
 
@@ -166,21 +176,29 @@ ubigint ubigint::operator* (const ubigint& that) const {
    product.ubig_value[u_vector_size + that.u_vector_size]; // inits vector to sum of sizes 
    int base_place = 0;
    udigit_t store_char;
+   //udigit_t temp;
    int carry = 0;
    int sum;
-   auto j = that.ubig_value.cbegin();
-
+   
+   
    for (auto i = ubig_value.cbegin(); i != ubig_value.cend(); i++){
 	
-	for (j = j + base_place; j != that.ubig_value.cend(); j++){
+	for (auto j = that.ubig_value.cbegin(); j != that.ubig_value.cend(); j++){
 	
-		sum = (*i * *j) + carry;
+		sum = ((*i - '0') * ( *j - '0')) + carry;
 		if (sum > 9){
-			 store_char = (10 -((*i * *j) % 10));
+			 store_char = ((10 -((*i * *j) % 10) ) + '0');
                          carry = ((*i * *j)/ 10);
-		} else { 
-			store_char = sum;
-			product.ubig_value.push_back(store_char); // fix
+			  product.ubig_value.insert((j + base_place),( store_char + '0')); // fix
+
+			 
+			if (j == (that.ubig_value.cend() - 1)){
+				product.ubig_value.push_back(carry + '0');
+			}
+		} else {
+			carry = 0; // reset carry 
+			store_char = sum + '0';
+			product.ubig_value.insert((j + base_place),( store_char + '0')); // fix
 		}
 			 
 	}
@@ -271,7 +289,10 @@ bool ubigint::operator< (const ubigint& that) const {
 }
 
 ostream& operator<< (ostream& out, const ubigint& that) { 
-   
-   return out << that.printable_value; 
+  string printable;
+  for (auto i = that.printable_value.rbegin(); i != that.printable_value.rend(); i++){
+  	printable = printable.append( *i);
+    }
+   return out << printable; 
 }
 
