@@ -79,8 +79,19 @@ bigint bigint::operator+ (const bigint& that) const {
 }
 
 bigint bigint::operator- (const bigint& that) const {
-   ubigint result = uvalue - that.uvalue;
-   return result;
+   ubigint result;
+   bigint final_result;
+    if (is_negative == that.is_negative) { //signs are the same
+	result = uvalue - that.uvalue;
+        final_result.is_negative = is_negative; 
+    } else { // signs are different
+	result = uvalue + that.uvalue;
+	final_result.is_negative = ((uvalue > that.uvalue)? is_negative : that.is_negative);
+	
+   }
+   final_result.uvalue = result;
+	
+   return final_result;
 }
 
 bigint bigint::operator* (const bigint& that) const {

@@ -116,7 +116,7 @@ ubigint ubigint::operator+ (const ubigint& that) const {
 ubigint ubigint::operator- (const ubigint& that) const {
    auto u_itor = ubig_value.cbegin();
    auto u_titor = that.ubig_value.cbegin();
-   char borrow = 0;
+   int borrow = 0;
    udigit_t diff_char;
    ubigint result;
 
@@ -142,23 +142,23 @@ ubigint ubigint::operator- (const ubigint& that) const {
 
  ///////////// ... In the event that one arg is longer than the other... //////////	
     while(u_itor != ubig_value.end()){
-	result.ubig_value.push_back(*u_itor);
+	result.ubig_value.push_back((*u_itor - '0'));
 	++u_itor;
    }
 	 
    while(u_titor != that.ubig_value.end()){
-	result.ubig_value.push_back(*u_titor);
+	result.ubig_value.push_back((*u_titor - '0'));
 	++u_titor;
    }
    /////////////////////////////////////////////////
 
  ///// Make a printable version of ubigint result.... /////////
    udigit_t holdchar;
-   auto ritor = result.ubig_value.crbegin();
-   while (ritor != result.ubig_value.crend()){
+   auto ritor = result.ubig_value.cbegin();
+   while (ritor != result.ubig_value.cend()){
 	holdchar = *ritor;
 	result.printable_value.push_back(to_string(holdchar));
-	cout << (*ritor - 0) << " test ritor value in +  " << endl; // test change later; working in offset
+	//cout << (*ritor - 0) << " test ritor value in +  " << endl; // test change later; working in offset
         //cout << result.printable_value << " test printable_value  " << endl; // test
 	ritor++;
    }
