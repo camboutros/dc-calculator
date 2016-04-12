@@ -28,13 +28,13 @@ class ubigint {
       using ubigvalue_t = vector<udigit_t>;
        ubigvalue_t ubig_value;
       
-      int u_vector_size; 
+      
      
    public:
       vector<string> p_v;
       void multiply_by_2();
       void divide_by_2();
-      
+      int u_vector_size; 
       int get_vector_size() ;
      friend bool ubigint_check_difference_true(const ubigint&);
 

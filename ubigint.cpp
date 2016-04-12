@@ -131,34 +131,34 @@ ubigint ubigint::operator- (const ubigint& that) const {
    udigit_t diff_char;
    ubigint r; //result
    int workspace = 0; // to do arithmetic 
-  
+ 
+   
  while(u_itor != ubig_value.end() and u_titor != that.ubig_value.end()){
-         diff_char = *u_titor;
+         diff_char = *u_itor;
+         cout << "Upper char is " << (diff_char - '0') << endl; //test
          if(borrow == -1) {
                diff_char = diff_char - '1' + '0';
                borrow = 0; // reset carry   
          }
-        if (diff_char < *u_itor){ 
-              //cout << "hit comparison " << endl; //test
+         
+        if (diff_char < *u_titor){ 
               diff_char = diff_char + 10;
               diff_char = diff_char + 0;
             
               workspace = (diff_char - '0');
            
-              workspace = workspace - (*u_itor - '0') ;
+              workspace = workspace - (*u_titor - '0') ;
              
               borrow = -1; // set borrow-carry
               diff_char = (workspace + '0');
-             
          } else {  
                 workspace = (diff_char);
-                workspace = (*u_itor - '0') - workspace ; 
+                workspace = (*u_titor - '0') - workspace ; 
                 diff_char = ((workspace + '0')); 
                
          }
         
-        
-         //cout << "Pushing back " << (diff_char - '0') << endl; //test
+       
          r.ubig_value.push_back((diff_char - '0'));
          ++u_itor;
          ++u_titor;
@@ -166,8 +166,8 @@ ubigint ubigint::operator- (const ubigint& that) const {
  }
 
  ///////////// One arg is longer than the other... //////////
-    while(u_titor != that.ubig_value.end()){
-        diff_char = (*u_titor);
+    while(u_itor != ubig_value.end()){
+        diff_char = (*u_itor);
 
         if(borrow == -1) {
              if (diff_char != '0') { // or equivalent... mess
@@ -177,17 +177,17 @@ ubigint ubigint::operator- (const ubigint& that) const {
         }
 
         r.ubig_value.push_back((diff_char - '0'));
-        ++u_titor;
+        ++u_itor;
    } 
-   while(u_itor != ubig_value.end()){
-        diff_char = (*u_itor);
+   while(u_titor != that.ubig_value.end()){
+        diff_char = (*u_titor);
         if(borrow == -1) {
              diff_char = diff_char - '1' + '0';
              borrow = 0; // reset carry
         }
         
         r.ubig_value.push_back((diff_char - '0'));
-        ++u_itor;
+        ++u_titor;
    }  
      // if (borrow == -1 ) {
      //      cout << "WARNING: CARRY OVERFLOW" << endl; //fix later
@@ -211,34 +211,27 @@ ubigint ubigint::operator- (const ubigint& that) const {
 }
 
 ubigint ubigint::operator* (const ubigint& that) const {
-   ubigint product; 
-   
-   product.ubig_value[u_vector_size + that.u_vector_size]; 
-   int base_place = 0;
-   udigit_t store_char;
-   //udigit_t temp;
+   ubigint product;
+   product.ubig_value.reserve(u_vector_size + that.u_vector_size); 
+  
+   udigit_t temp;
    int carry = 0;
-   int sum;
+   int m =0; //counter for i iterator
+   int n = 0;  //counter for j iterator
    
    
  for (auto i = ubig_value.cbegin(); i != ubig_value.cend(); i++){
+  carry = 0;
   for(auto j=that.ubig_value.cbegin();j!=that.ubig_value.cend(); j++){
-   sum = ((*i - '0') * ( *j - '0')) + carry;
-   if (sum > 9){
-     store_char = ((10 -((*i * *j) % 10) ) + '0');
-     carry = ((*i * *j)/ 10);
-     product.ubig_value.insert((j + base_place),( store_char + '0')); 
-        if (j == (that.ubig_value.cend() - 1)){
-              product.ubig_value.push_back(carry + '0');
-        }
-     } else {
-       carry = 0; // reset carry 
-       store_char = sum + '0';
-       product.ubig_value.insert((j + base_place),( store_char + '0')); 
-     } 
-   }
-  base_place = base_place + 1;
- }
+    
+     temp = ( product.ubig_value.at(m + n) + (*i * *j) + carry);
+     product.ubig_value.at(m+n) = (temp % 10);
+     carry = (temp / 10);  
+     n = n + 1;  
+   } //end inner for-loop
+  product.ubig_value.push_back(carry);
+  m = m + 1;
+ } //end outer for-loop
    return product; // test
 }
 void ubigint::multiply_by_2() {
@@ -309,14 +302,18 @@ bool ubigint::operator== (const ubigint& that) const {
 bool ubigint::operator< (const ubigint& that) const {
  auto u_i = ubig_value.crbegin();
  auto u_t = that.ubig_value.crbegin();
- while(u_i != ubig_value.crend() and u_t != that.ubig_value.crend()){
-        if (*u_i > *u_t){
+ if (this->u_vector_size != that.u_vector_size){
+  return ((this->u_vector_size < that.u_vector_size)? true:false);
+ } else { //must compare magnitude;
+    while(u_i != ubig_value.crend() and u_t != that.ubig_value.crend()){
+       if (*u_i > *u_t){
             return false;
         } // else... 
         ++u_i;
         ++u_t;  
+    }
  }
- return true; // test
+ return true; 
 }
 ostream& operator<< (ostream& out, const ubigint& that) { 
   string printable;

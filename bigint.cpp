@@ -77,11 +77,13 @@ bigint bigint::operator- (const bigint& that) const {
  bigint f; // final result
 
  if (is_negative == that.is_negative) { //signs are the same
-     if (uvalue < that.uvalue ){
+     if (uvalue < that.uvalue){ 
+     
       f.is_negative = is_negative; 
       result = that.uvalue - uvalue;
       
     } else if (uvalue > that.uvalue ) {
+     
       f.is_negative = that.is_negative;
       result = uvalue - that.uvalue;
         
