@@ -56,11 +56,11 @@ void do_dup (bigint_stack& stack, const char) {
    stack.push (top);
 }
 
-void do_printall (bigint_stack& stack, const char) { // fix: would love to stop this
+void do_printall (bigint_stack& stack, const char) { 
    for (const auto &elem: stack) cout << elem << endl;
 }
 
-void do_print (bigint_stack& stack, const char) { // fix: would love to stop this
+void do_print (bigint_stack& stack, const char) { 
         cout << stack.top() << endl;
 
 }

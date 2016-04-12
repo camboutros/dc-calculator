@@ -135,16 +135,17 @@ ubigint ubigint::operator- (const ubigint& that) const {
    
  while(u_itor != ubig_value.end() and u_titor != that.ubig_value.end()){
          diff_char = *u_itor;
-         cout << "Upper char is " << (diff_char - '0') << endl; //test
+        
          if(borrow == -1) {
                diff_char = diff_char - '1' + '0';
                borrow = 0; // reset carry   
+            
          }
          
         if (diff_char < *u_titor){ 
               diff_char = diff_char + 10;
               diff_char = diff_char + 0;
-            
+           
               workspace = (diff_char - '0');
            
               workspace = workspace - (*u_titor - '0') ;
@@ -152,13 +153,12 @@ ubigint ubigint::operator- (const ubigint& that) const {
               borrow = -1; // set borrow-carry
               diff_char = (workspace + '0');
          } else {  
-                workspace = (diff_char);
-                workspace = (*u_titor - '0') - workspace ; 
-                diff_char = ((workspace + '0')); 
                
+                workspace = (diff_char);
+                workspace = workspace - (*u_titor - '0'); 
+                diff_char = ((workspace));     
          }
-        
-       
+
          r.ubig_value.push_back((diff_char - '0'));
          ++u_itor;
          ++u_titor;
@@ -212,27 +212,33 @@ ubigint ubigint::operator- (const ubigint& that) const {
 
 ubigint ubigint::operator* (const ubigint& that) const {
    ubigint product;
-   product.ubig_value.reserve(u_vector_size + that.u_vector_size); 
-  
+   int expected_size = (u_vector_size + that.u_vector_size);
+   for (int i = 0; i < expected_size; ++i){
+      product.ubig_value.push_back('0');
+   }
    udigit_t temp;
    int carry = 0;
-   int m =0; //counter for i iterator
+   int m = 0; //counter for i iterator
    int n = 0;  //counter for j iterator
    
    
  for (auto i = ubig_value.cbegin(); i != ubig_value.cend(); i++){
   carry = 0;
   for(auto j=that.ubig_value.cbegin();j!=that.ubig_value.cend(); j++){
-    
-     temp = ( product.ubig_value.at(m + n) + (*i * *j) + carry);
-     product.ubig_value.at(m+n) = (temp % 10);
-     carry = (temp / 10);  
+     temp = (product.ubig_value.at(m+n)+((*i-'0')*(*j-'0'))+carry);
+     
+     
+     product.ubig_value.at(m+n) = (((temp - '0')% 10) + '0');
+     
+     carry = (((temp - '0')/ 10) + '0');
      n = n + 1;  
+     
    } //end inner for-loop
   product.ubig_value.push_back(carry);
+  
   m = m + 1;
  } //end outer for-loop
-   return product; // test
+ return product; // test
 }
 void ubigint::multiply_by_2() {
    //udigit_t store_char;
