@@ -33,11 +33,6 @@ bigint::bigint (const string& that) {
       v_s = uvalue.get_vector_size();
 }
 
-
-
-
-
-
 bigint bigint::operator+ () const {
    return *this;
 }
@@ -50,16 +45,12 @@ bigint bigint::operator- () const {
 bigint bigint::operator+ (const bigint& that) const {
    ubigint ubig_result;
    bigint final_result;
-   // test
-   //cout << "first bigint value: " << uvalue << endl;
-   //cout << "second bigint value: " << that.uvalue << endl;
-   
-   // If signs are the same... 
+
    if ((is_negative == that.is_negative)) { 
         ubig_result = uvalue + that.uvalue;
         final_result.is_negative = is_negative;
    }
-   else { // ... Else, signs are different ... 
+   else { 
      if (uvalue > that.uvalue ){
         final_result.is_negative = is_negative; 
         ubig_result = uvalue - that.uvalue;
@@ -68,6 +59,7 @@ bigint bigint::operator+ (const bigint& that) const {
         ubig_result = that.uvalue - uvalue;
      }
    }
+
    final_result.uvalue = ubig_result;
    return final_result;
 }
@@ -78,12 +70,11 @@ bigint bigint::operator- (const bigint& that) const {
 
  if (is_negative == that.is_negative) { //signs are the same
      if (uvalue < that.uvalue){ 
-     
-      f.is_negative = is_negative; 
-      result = that.uvalue - uvalue;
+     f.is_negative = not is_negative; 
+     result = that.uvalue - uvalue;
       
     } else if (uvalue > that.uvalue ) {
-     
+       
       f.is_negative = that.is_negative;
       result = uvalue - that.uvalue;
         
@@ -125,7 +116,7 @@ bool bigint::operator== (const bigint& that) const{
    if (not(uvalue == that.uvalue)) { //difference found 
          return false; //bigints not the same
    }
-   // else ... 
+
    return true; 
 
 }
@@ -139,7 +130,7 @@ bool bigint::operator< (const bigint& that) const {
    // v_s = vector_size
    else if ((is_negative == that.is_negative) and (v_s == that.v_s)){
         return (uvalue < that.uvalue);
-   } else if (   v_s < that.   v_s) {
+   } else if (   v_s < that.v_s) {
         return true;
    } else { return false;}
    

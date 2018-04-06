@@ -1,9 +1,14 @@
-head	1.8;
+head	1.9;
 access;
 symbols;
 locks;
 comment	@// @;
 
+
+1.9
+date	2017.04.10.04.45.03;	author cboutros;	state Exp;
+branches;
+next	1.8;
 
 1.8
 date	2015.07.02.23.48.18;	author -;	state -;
@@ -50,12 +55,12 @@ desc
 @@
 
 
-1.8
+1.9
 log
-@-
+@Qq!
 @
 text
-@// $Id: scanner.cpp,v 1.7 2014-04-08 18:43:33-07 - - $
+@// $Id: scanner.cpp,v 1.8 2015-07-02 16:48:18-07 - - $
 
 #include <iostream>
 #include <locale>
@@ -110,6 +115,17 @@ ostream& operator<< (ostream& out, const token_t& token) {
    return out;
 }
 
+@
+
+
+1.8
+log
+@-
+@
+text
+@d1 1
+a1 1
+// $Id: scanner.cpp,v 1.7 2014-04-08 18:43:33-07 - - $
 @
 
 

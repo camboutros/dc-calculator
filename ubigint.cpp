@@ -241,20 +241,11 @@ ubigint ubigint::operator* (const ubigint& that) const {
  return product; // test
 }
 void ubigint::multiply_by_2() {
-   //udigit_t store_char;
-   //char carry = 0;
-   //for (auto i = ubig_value.cbegin();i!= ubig_value.cend(); i++){
-   //    if ((((*i * 2) + carry) > 9 )){ // make sure types add up
-   //        store_char = ((*i * 2) - 10);
-   //        carry = 1;
-   //        ubig_value.at(i) = store_char; // check syntax
-   //     }
-   //} 
-   // fix//test
+  *this = *this + *this;
 }
 
 void ubigint::divide_by_2() {
-   //uvalue /= 2; test
+   *this = *this / *this;
 }
 
 int ubigint::get_vector_size() {
